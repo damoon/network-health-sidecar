@@ -1,0 +1,9 @@
+.git
+.gitignore
+.dockerignore
+.github
+Dockerfile
+README.md
+renovate.json
+vendor
+LICENSE
