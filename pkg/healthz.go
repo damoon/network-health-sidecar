@@ -2,6 +2,7 @@ package health
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -42,10 +43,12 @@ func (s *Sidecar) handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusServiceUnavailable)
 	}
 
-	w.Write([]byte(fmt.Sprintf("dns internal: %v\n", s.dnsInternal)))
-	w.Write([]byte(fmt.Sprintf("dns external: %v\n", s.dnsExternal)))
-	w.Write([]byte(fmt.Sprintf("http internal: %v\n", s.httpInternal)))
-	w.Write([]byte(fmt.Sprintf("http external: %v\n", s.httpExternal)))
+	output := fmt.Sprintf("dns internal: %v\ndns external: %v\nhttp internal: %v\nhttp external: %v\n", s.dnsInternal, s.dnsExternal, s.httpInternal, s.httpExternal)
+
+	_, err := w.Write([]byte(output))
+	if err != nil {
+		log.Printf("write output: %v", err)
+	}
 }
 
 func (s *Sidecar) healthy() bool {

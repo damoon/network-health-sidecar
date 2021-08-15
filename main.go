@@ -8,13 +8,6 @@ import (
 	cli "github.com/urfave/cli/v2"
 )
 
-var (
-	dnsInternal  bool
-	dnsExternal  bool
-	httpInternal bool
-	httpExternal bool
-)
-
 func main() {
 	err := run(os.Args)
 	if err != nil {
