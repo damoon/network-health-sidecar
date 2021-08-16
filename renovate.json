@@ -23,6 +23,16 @@
             ],
             "depNameTemplate": "golangci/golangci-lint",
             "datasourceTemplate": "github-tags"
+        },
+        {
+            "fileMatch": [
+                "^.github/workflows/test.yml$"
+            ],
+            "matchStrings": [
+                "go-version: (?<currentValue>.*?)\n"
+            ],
+            "depNameTemplate": "golang",
+            "datasourceTemplate": "docker"
         }
     ]
 }
