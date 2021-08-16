@@ -22,21 +22,40 @@ type Sidecar struct {
 }
 
 func (s *Sidecar) Run() error {
-	go s.update()
+	s.startChecks()
 
 	http.HandleFunc("/healthz", s.handler)
 	return http.ListenAndServe(":8080", nil)
 }
 
-func (s *Sidecar) update() {
-	for {
-		s.dnsInternal = checkDNS(s.DNSInternal)
-		s.dnsExternal = checkDNS(s.DNSExternal)
-		s.httpInternal = checkHTTP(s.HTTPInternal, s.HTTPInternalCA)
-		s.httpExternal = checkHTTP(s.HTTPExternal, nil)
+func (s *Sidecar) startChecks() {
+	go func() {
+		for {
+			s.dnsInternal = checkDNS(s.DNSInternal)
+			time.Sleep(10 * time.Second)
+		}
+	}()
 
-		time.Sleep(5 * time.Second)
-	}
+	go func() {
+		for {
+			s.dnsExternal = checkDNS(s.DNSExternal)
+			time.Sleep(10 * time.Second)
+		}
+	}()
+
+	go func() {
+		for {
+			s.httpInternal = checkHTTP(s.HTTPInternal, s.HTTPInternalCA)
+			time.Sleep(10 * time.Second)
+		}
+	}()
+
+	go func() {
+		for {
+			s.httpExternal = checkHTTP(s.HTTPExternal, nil)
+			time.Sleep(30 * time.Second)
+		}
+	}()
 }
 
 func (s *Sidecar) handler(w http.ResponseWriter, r *http.Request) {
