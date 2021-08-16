@@ -9,7 +9,7 @@ Checks to verify DNS and HTTP run asynchron in a loop to allow for fast response
 ## help
 
 ``` bash
-go run main.go -h
+# go run main.go -h
 NAME:
    network health sidecar - offloads network health checks form application
 
@@ -23,7 +23,7 @@ GLOBAL OPTIONS:
    --dns-internal value      DNS domain to test cluster internal service lookups (default: "kubernetes.default.svc")
    --dns-external value      DNS domain to test external lookups (default: "cloudflare.com")
    --http-internal value     URL to test cluster internal http requests (default: "https://kubernetes.default.svc/healthz")
-   --http-internal-insecure  Skip https validation (default: true)
+   --http-internal-ca value  CA to verify the internal http endpoint against (default: "/run/secrets/kubernetes.io/serviceaccount/ca.crt")
    --http-external value     URL to test external http requests (default: "https://cloudflare.com")
    --help, -h                show help (default: false)
 ```

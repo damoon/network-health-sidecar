@@ -1,6 +1,7 @@
 package health
 
 import (
+	"crypto/x509"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,11 +9,11 @@ import (
 )
 
 type Sidecar struct {
-	DNSInternal          string
-	DNSExternal          string
-	HTTPInternal         string
-	HTTPInternalInsecure bool
-	HTTPExternal         string
+	DNSInternal    string
+	DNSExternal    string
+	HTTPInternal   string
+	HTTPInternalCA *x509.Certificate
+	HTTPExternal   string
 
 	dnsInternal  bool
 	dnsExternal  bool
@@ -31,8 +32,8 @@ func (s *Sidecar) update() {
 	for {
 		s.dnsInternal = checkDNS(s.DNSInternal)
 		s.dnsExternal = checkDNS(s.DNSExternal)
-		s.httpInternal = checkHTTP(s.HTTPInternal, s.HTTPInternalInsecure)
-		s.httpExternal = checkHTTP(s.HTTPExternal, false)
+		s.httpInternal = checkHTTP(s.HTTPInternal, s.HTTPInternalCA)
+		s.httpExternal = checkHTTP(s.HTTPExternal, nil)
 
 		time.Sleep(5 * time.Second)
 	}

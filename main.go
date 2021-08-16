@@ -1,6 +1,9 @@
 package main
 
 import (
+	"crypto/x509"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 
@@ -36,10 +39,10 @@ func run(args []string) error {
 				Value: "https://kubernetes.default.svc/healthz",
 				Usage: "URL to test cluster internal http requests",
 			},
-			&cli.BoolFlag{
-				Name:  "http-internal-insecure",
-				Value: true,
-				Usage: "Skip https validation",
+			&cli.StringFlag{
+				Name:  "http-internal-ca",
+				Value: "/run/secrets/kubernetes.io/serviceaccount/ca.crt",
+				Usage: "CA to verify the internal http endpoint against",
 			},
 			&cli.StringFlag{
 				Name:  "http-external",
@@ -49,11 +52,25 @@ func run(args []string) error {
 		},
 		Action: func(c *cli.Context) error {
 			sidecar := health.Sidecar{
-				DNSInternal:          c.String("dns-internal"),
-				DNSExternal:          c.String("dns-external"),
-				HTTPInternal:         c.String("http-internal"),
-				HTTPInternalInsecure: c.Bool("http-internal-insecure"),
-				HTTPExternal:         c.String("http-external"),
+				DNSInternal:  c.String("dns-internal"),
+				DNSExternal:  c.String("dns-external"),
+				HTTPInternal: c.String("http-internal"),
+				HTTPExternal: c.String("http-external"),
+			}
+
+			caFile := c.String("http-internal-ca")
+			if caFile != "" {
+				ca, err := ioutil.ReadFile(caFile)
+				if err != nil {
+					return fmt.Errorf("reading ca file: %v", err)
+				}
+
+				cert, err := x509.ParseCertificate(ca)
+				if err != nil {
+					log.Panic(err)
+				}
+
+				sidecar.HTTPInternalCA = cert
 			}
 
 			err := sidecar.Run()

@@ -2,22 +2,30 @@ package health
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"log"
 	"net"
 	"net/http"
 	"time"
 )
 
-func checkHTTP(url string, insecure bool) bool {
+func checkHTTP(url string, cert *x509.Certificate) bool {
 	var netTransport = &http.Transport{
 		Dial: (&net.Dialer{
 			Timeout: time.Second,
 		}).Dial,
 		TLSHandshakeTimeout: time.Second,
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: insecure,
-		},
 	}
+
+	if cert != nil {
+		caCertPool := x509.NewCertPool()
+		caCertPool.AddCert(cert)
+
+		netTransport.TLSClientConfig = &tls.Config{
+			RootCAs: caCertPool,
+		}
+	}
+
 	var netClient = &http.Client{
 		Timeout:   time.Second,
 		Transport: netTransport,
