@@ -11,15 +11,15 @@ import (
 func checkHTTP(url string, insecure bool) bool {
 	var netTransport = &http.Transport{
 		Dial: (&net.Dialer{
-			Timeout: 5 * time.Second,
+			Timeout: time.Second,
 		}).Dial,
-		TLSHandshakeTimeout: 5 * time.Second,
+		TLSHandshakeTimeout: time.Second,
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: insecure,
 		},
 	}
 	var netClient = &http.Client{
-		Timeout:   time.Second * 10,
+		Timeout:   time.Second,
 		Transport: netTransport,
 	}
 

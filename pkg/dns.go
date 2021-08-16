@@ -9,7 +9,7 @@ import (
 
 func checkDNS(domain string) bool {
 	ctx := context.Background()
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, time.Second)
 	defer cancel()
 
 	ips, err := net.DefaultResolver.LookupIP(ctx, "ip4", domain)
