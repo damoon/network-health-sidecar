@@ -21,49 +21,80 @@ type Sidecar struct {
 	httpExternal bool
 }
 
-func (s *Sidecar) Run() error {
-	s.startChecks()
+func (s *Sidecar) Start() func() {
+	quit := make(chan interface{}, 4)
+	done := make(chan interface{})
 
-	http.HandleFunc("/healthz", s.handler)
-	return http.ListenAndServe(":8080", nil)
+	go func() {
+		for {
+			select {
+			case <-time.After(10 * time.Second):
+				s.dnsInternal = checkDNS(s.DNSInternal)
+			case <-quit:
+				done <- struct{}{}
+				return
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			select {
+			case <-time.After(10 * time.Second):
+				s.dnsExternal = checkDNS(s.DNSExternal)
+			case <-quit:
+				done <- struct{}{}
+				return
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			select {
+			case <-time.After(10 * time.Second):
+				s.httpInternal = checkHTTP(s.HTTPInternal, s.HTTPInternalCA)
+			case <-quit:
+				done <- struct{}{}
+				return
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			select {
+			case <-time.After(30 * time.Second):
+				s.httpExternal = checkHTTP(s.HTTPExternal, nil)
+			case <-quit:
+				done <- struct{}{}
+				return
+			}
+		}
+	}()
+
+	return func() {
+		for i := 0; i < 4; i++ {
+			quit <- struct{}{}
+		}
+		for i := 0; i < 4; i++ {
+			<-done
+		}
+	}
 }
 
-func (s *Sidecar) startChecks() {
-	go func() {
-		for {
-			s.dnsInternal = checkDNS(s.DNSInternal)
-			time.Sleep(10 * time.Second)
-		}
-	}()
-
-	go func() {
-		for {
-			s.dnsExternal = checkDNS(s.DNSExternal)
-			time.Sleep(10 * time.Second)
-		}
-	}()
-
-	go func() {
-		for {
-			s.httpInternal = checkHTTP(s.HTTPInternal, s.HTTPInternalCA)
-			time.Sleep(10 * time.Second)
-		}
-	}()
-
-	go func() {
-		for {
-			s.httpExternal = checkHTTP(s.HTTPExternal, nil)
-			time.Sleep(30 * time.Second)
-		}
-	}()
-}
-
-func (s *Sidecar) handler(w http.ResponseWriter, r *http.Request) {
+func (s *Sidecar) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if !s.healthy() {
 		w.WriteHeader(http.StatusServiceUnavailable)
 	}
 
-	output := fmt.Sprintf("dns internal: %v\ndns external: %v\nhttp internal: %v\nhttp external: %v\n", s.dnsInternal, s.dnsExternal, s.httpInternal, s.httpExternal)
+	output := fmt.Sprintf(
+		"dns internal: %v\ndns external: %v\nhttp internal: %v\nhttp external: %v\n",
+		s.dnsInternal,
+		s.dnsExternal,
+		s.httpInternal,
+		s.httpExternal,
+	)
 
 	_, err := w.Write([]byte(output))
 	if err != nil {
