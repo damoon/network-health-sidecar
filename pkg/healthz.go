@@ -26,6 +26,7 @@ func (s *Sidecar) Start() func() {
 	done := make(chan interface{})
 
 	go func() {
+		s.dnsInternal = checkDNS(s.DNSInternal)
 		for {
 			select {
 			case <-time.After(10 * time.Second):
@@ -38,6 +39,7 @@ func (s *Sidecar) Start() func() {
 	}()
 
 	go func() {
+		s.dnsExternal = checkDNS(s.DNSExternal)
 		for {
 			select {
 			case <-time.After(10 * time.Second):
@@ -50,6 +52,7 @@ func (s *Sidecar) Start() func() {
 	}()
 
 	go func() {
+		s.httpInternal = checkHTTP(s.HTTPInternal, s.HTTPInternalCA)
 		for {
 			select {
 			case <-time.After(10 * time.Second):
@@ -62,6 +65,7 @@ func (s *Sidecar) Start() func() {
 	}()
 
 	go func() {
+		s.httpExternal = checkHTTP(s.HTTPExternal, nil)
 		for {
 			select {
 			case <-time.After(30 * time.Second):
