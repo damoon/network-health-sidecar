@@ -31,8 +31,8 @@
             "matchStrings": [
                 "go-version: (?<currentValue>.*?)\n"
             ],
-            "depNameTemplate": "golang",
-            "datasourceTemplate": "docker"
+            "depNameTemplate": "golang/go",
+            "datasourceTemplate": "github-tags"
         }
     ]
 }
