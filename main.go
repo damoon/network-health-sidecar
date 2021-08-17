@@ -82,7 +82,7 @@ func runServer(c *cli.Context) error {
 
 	addr := c.String("addr")
 
-	svc := httpServer(sidecar, addr)
+	svc := httpServer(sidecar.Mux(), addr)
 
 	log.Printf("starting server on %v", addr)
 

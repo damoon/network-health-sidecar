@@ -26,11 +26,11 @@ func (s *Sidecar) Start() func() {
 	done := make(chan interface{})
 
 	go func() {
-		s.dnsInternal = checkDNS(s.DNSInternal)
+		s.checkDNSInternal()
 		for {
 			select {
 			case <-time.After(10 * time.Second):
-				s.dnsInternal = checkDNS(s.DNSInternal)
+				s.checkDNSInternal()
 			case <-quit:
 				done <- struct{}{}
 				return
@@ -39,11 +39,11 @@ func (s *Sidecar) Start() func() {
 	}()
 
 	go func() {
-		s.dnsExternal = checkDNS(s.DNSExternal)
+		s.checkDNSExternal()
 		for {
 			select {
 			case <-time.After(10 * time.Second):
-				s.dnsExternal = checkDNS(s.DNSExternal)
+				s.checkDNSExternal()
 			case <-quit:
 				done <- struct{}{}
 				return
@@ -52,11 +52,11 @@ func (s *Sidecar) Start() func() {
 	}()
 
 	go func() {
-		s.httpInternal = checkHTTP(s.HTTPInternal, s.HTTPInternalCA)
+		s.checkHTTPInternal()
 		for {
 			select {
 			case <-time.After(10 * time.Second):
-				s.httpInternal = checkHTTP(s.HTTPInternal, s.HTTPInternalCA)
+				s.checkHTTPInternal()
 			case <-quit:
 				done <- struct{}{}
 				return
@@ -65,11 +65,11 @@ func (s *Sidecar) Start() func() {
 	}()
 
 	go func() {
-		s.httpExternal = checkHTTP(s.HTTPExternal, nil)
+		s.checkHTTPExternal()
 		for {
 			select {
 			case <-time.After(30 * time.Second):
-				s.httpExternal = checkHTTP(s.HTTPExternal, nil)
+				s.checkHTTPExternal()
 			case <-quit:
 				done <- struct{}{}
 				return
