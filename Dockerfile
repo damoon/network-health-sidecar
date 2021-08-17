@@ -1,5 +1,5 @@
 # build environment
-FROM golang:1.17.0@sha256:4f5b9100c3660dd36da84ae865de6746234627e8456d04f594cf7e3c140cd079 AS build-env
+FROM golang:1.17.0@sha256:50b5f2673c0995eb3cda07150611acd3bd0523b0b3da5bd079e9b9d905f8e1cc AS build-env
 
 WORKDIR /app
 
