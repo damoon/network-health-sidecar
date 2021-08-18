@@ -1,7 +1,6 @@
 name: test
 on:
   - push
-  - pull_request
 jobs:
   go-test:
     runs-on: ubuntu-latest

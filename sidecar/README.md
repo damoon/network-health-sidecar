@@ -2,7 +2,8 @@
 
 Network health sidecar is intended to run as a sidecar in kubernetes pods.
 
-It provides a healthcheck `:8080/healthz` for the readiness probe.
+It provides a healthcheck `:8080/healthz` for the readiness probe \
+and it provides a metrics endpoint `:8080/metrics` for prometheus.
 
 Checks to verify DNS and HTTP run asynchron in a loop to allow for fast responses on the health endpoint.
 

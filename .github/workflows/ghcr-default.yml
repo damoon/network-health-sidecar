@@ -31,12 +31,13 @@ jobs:
         id: meta
         uses: docker/metadata-action@8b842e721d38d18bea23b57f4c040e53331f4ca2 # renovate: tag=v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/sidecar
 
       - name: Build and push Docker image
         uses: docker/build-push-action@1bc1040caef9e604eb543693ba89b5bf4fc80935 # renovate: tag=v2
         with:
           context: .
+          file: ./sidecar/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

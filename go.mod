@@ -1,4 +1,4 @@
-module github.com/damoon/network-health-sidecar
+module github.com/damoon/network-health
 
 go 1.17
 

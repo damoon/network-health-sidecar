@@ -13,7 +13,7 @@ import (
 	"syscall"
 	"time"
 
-	health "github.com/damoon/network-health-sidecar/pkg"
+	"github.com/damoon/network-health/sidecar"
 	cli "github.com/urfave/cli/v2"
 )
 
@@ -106,8 +106,8 @@ func runServer(c *cli.Context) error {
 	return nil
 }
 
-func healthChecker(c *cli.Context) (*health.Sidecar, error) {
-	sidecar := &health.Sidecar{
+func healthChecker(c *cli.Context) (*sidecar.Sidecar, error) {
+	sidecar := &sidecar.Sidecar{
 		DNSInternal:  c.String("dns-internal"),
 		DNSExternal:  c.String("dns-external"),
 		HTTPInternal: c.String("http-internal"),

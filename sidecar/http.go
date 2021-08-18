@@ -1,4 +1,4 @@
-package health
+package sidecar
 
 import (
 	"crypto/tls"
