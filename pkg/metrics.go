@@ -52,7 +52,7 @@ var (
 func (s *Sidecar) checkDNSInternal() {
 	t := time.Now()
 	healthy := checkDNS(s.DNSInternal)
-	d := time.Now().Sub(t).Seconds()
+	d := time.Since(t).Seconds()
 
 	dnsInternal.Observe(d)
 
@@ -66,7 +66,7 @@ func (s *Sidecar) checkDNSInternal() {
 func (s *Sidecar) checkDNSExternal() {
 	t := time.Now()
 	healthy := checkDNS(s.DNSExternal)
-	d := time.Now().Sub(t).Seconds()
+	d := time.Since(t).Seconds()
 
 	dnsExternal.Observe(d)
 
@@ -80,7 +80,7 @@ func (s *Sidecar) checkDNSExternal() {
 func (s *Sidecar) checkHTTPInternal() {
 	t := time.Now()
 	healthy := checkHTTP(s.HTTPInternal, s.HTTPInternalCA)
-	d := time.Now().Sub(t).Seconds()
+	d := time.Since(t).Seconds()
 
 	httpInternal.Observe(d)
 
@@ -94,7 +94,7 @@ func (s *Sidecar) checkHTTPInternal() {
 func (s *Sidecar) checkHTTPExternal() {
 	t := time.Now()
 	healthy := checkHTTP(s.HTTPExternal, nil)
-	d := time.Now().Sub(t).Seconds()
+	d := time.Since(t).Seconds()
 
 	httpExternal.Observe(d)
 
