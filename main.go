@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"crypto/x509"
+	"encoding/pem"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -74,7 +75,7 @@ func run(args []string) error {
 func runServer(c *cli.Context) error {
 	sidecar, err := healthChecker(c)
 	if err != nil {
-		return err
+		return fmt.Errorf("setup health checker: %v", err)
 	}
 
 	stop := sidecar.Start()
@@ -115,14 +116,19 @@ func healthChecker(c *cli.Context) (*health.Sidecar, error) {
 
 	caFile := c.String("http-internal-ca")
 	if caFile != "" {
-		ca, err := ioutil.ReadFile(caFile)
+		certPEM, err := ioutil.ReadFile(caFile)
 		if err != nil {
 			return nil, fmt.Errorf("reading ca file: %v", err)
 		}
 
-		cert, err := x509.ParseCertificate(ca)
+		block, _ := pem.Decode([]byte(certPEM))
+		if block == nil {
+			return nil, fmt.Errorf("decode pem certificate: %v", err)
+		}
+
+		cert, err := x509.ParseCertificate(block.Bytes)
 		if err != nil {
-			log.Panic(err)
+			return nil, fmt.Errorf("parse ca file: %v", err)
 		}
 
 		sidecar.HTTPInternalCA = cert
