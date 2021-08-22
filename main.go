@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -30,6 +31,11 @@ func run(args []string) error {
 		Usage:                "offloads network health checks form application",
 		EnableBashCompletion: true,
 		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "protocol",
+				Value: "tcp",
+				Usage: "Protocol to listen on",
+			},
 			&cli.StringFlag{
 				Name:  "addr",
 				Value: ":8080",
@@ -81,13 +87,12 @@ func runServer(c *cli.Context) error {
 	stop := sidecar.Start()
 	defer stop()
 
+	svc := httpServer(sidecar.Mux())
+
 	addr := c.String("addr")
+	protocol := c.String("protocol")
 
-	svc := httpServer(sidecar.Mux(), addr)
-
-	log.Printf("starting server on %v", addr)
-
-	go mustListenAndServe(svc)
+	go mustListenAndServe(svc, protocol, addr)
 
 	log.Println("running")
 
@@ -137,19 +142,25 @@ func healthChecker(c *cli.Context) (*health.Sidecar, error) {
 	return sidecar, nil
 }
 
-func httpServer(h http.Handler, addr string) *http.Server {
+func httpServer(h http.Handler) *http.Server {
 	httpServer := &http.Server{
 		ReadTimeout:  time.Second,
 		WriteTimeout: time.Second,
 	}
-	httpServer.Addr = addr
 	httpServer.Handler = h
 
 	return httpServer
 }
 
-func mustListenAndServe(srv *http.Server) {
-	err := srv.ListenAndServe()
+func mustListenAndServe(srv *http.Server, protocol, addr string) {
+	log.Printf("starting server on %s://%s", protocol, addr)
+
+	listener, err := net.Listen(protocol, addr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = srv.Serve(listener)
 	if err != nil && err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
