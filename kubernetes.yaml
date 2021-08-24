@@ -23,7 +23,7 @@ spec:
         readinessProbe:
           tcpSocket:
             port: 80
-      - name: network-health
+      - name: network-health-http
         image: network-health-image
         ports:
         - containerPort: 8080
@@ -31,3 +31,15 @@ spec:
           httpGet:
             path: /healthz
             port: 8080
+      - name: network-health-exec
+        image: network-health-image
+        command:
+          - network-health-server
+          - --protocol=unix
+          - --addr=/tmp/network-health.socket
+        readinessProbe:
+          exec:
+            command:
+              - network-health-client
+              - --protocol=unix
+              - --addr=/tmp/network-health.socket
