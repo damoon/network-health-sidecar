@@ -37,7 +37,7 @@ jobs:
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.2.0
       - name: Install tilt cli
-        uses: yokawasa/action-setup-kube-tools@v0.7.1
+        uses: yokawasa/action-setup-kube-tools@c81bf94cddd6c3172e6f61aa7f5ad66a2b5db98d # renovate: tag=v0.8.0
         with:
           setup-tools: |
             tilt
