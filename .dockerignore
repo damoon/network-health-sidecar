@@ -1,9 +1,11 @@
 .git
-.gitignore
+vendor
 .dockerignore
+.gitignore
 .github
 Dockerfile
+*.yaml
+LICENSE
 README.md
 renovate.json
-vendor
-LICENSE
+Tiltfile
