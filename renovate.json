@@ -16,7 +16,7 @@
     "regexManagers": [
         {
             "fileMatch": [
-                "^.github/workflows/lint.yml$"
+                "^.github/workflows/check.yml$"
             ],
             "matchStrings": [
                 "version: (?<currentValue>.*?)\n"
@@ -26,7 +26,7 @@
         },
         {
             "fileMatch": [
-                "^.github/workflows/test.yml$"
+                "^.github/workflows/check.yml$"
             ],
             "matchStrings": [
                 "go-version: (?<currentValue>.*?)\n"

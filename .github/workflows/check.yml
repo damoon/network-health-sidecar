@@ -1,11 +1,10 @@
-# https://github.com/golangci/golangci-lint-action#how-to-use
 name: lint
 on:
   - push
   - pull_request
 jobs:
-  golangci:
-    name: lint
+# https://github.com/golangci/golangci-lint-action#how-to-use
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # renovate: tag=v2
@@ -14,3 +13,12 @@ jobs:
         with:
           # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
           version: v1.41.1
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # renovate: tag=v2
+      - uses: actions/setup-go@331ce1d993939866bb63c32c6cbbfd48fa76fc57 # renovate: tag=v2
+        with:
+          go-version: '1.17.0'
+      - run: go version
+      - run: go test -v ./...
