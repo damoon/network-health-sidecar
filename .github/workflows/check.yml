@@ -41,7 +41,7 @@ jobs:
         with:
           setup-tools: |
             tilt
-          tilt: '0.18.11'
+          tilt: 'v0.22.6'
       - name: Execute tilt ci
         run: |
           timeout 600 tilt ci
