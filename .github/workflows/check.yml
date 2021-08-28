@@ -42,6 +42,9 @@ jobs:
           setup-tools: |
             tilt
           tilt: 'v0.22.6'
-      - name: Execute tilt ci
+      - name: Verify tilt ci (development)
         run: |
           timeout 600 tilt ci
+      - name: Verify tilt ci (prod)
+        run: |
+          PROD=1 timeout 600 tilt ci

@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: exec-check
+  name: http-check
   labels:
-    app: exec-check
+    app: http-check
 spec:
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: exec-check
+      app: http-check
   template:
     metadata:
       labels:
-        app: exec-check
+        app: http-check
     spec:
       containers:
       - name: nginx
@@ -23,15 +23,11 @@ spec:
         readinessProbe:
           tcpSocket:
             port: 80
-      - name: network-health-exec
+      - name: network-health-http
         image: network-health-image
-        command:
-          - network-health-server
-          - --protocol=unix
-          - --addr=/tmp/network-health.socket
+        ports:
+        - containerPort: 8080
         readinessProbe:
-          exec:
-            command:
-              - network-health-client
-              - --protocol=unix
-              - --addr=/tmp/network-health.socket
+          httpGet:
+            path: /healthz
+            port: 8080
