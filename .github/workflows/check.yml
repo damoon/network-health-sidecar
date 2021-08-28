@@ -4,34 +4,44 @@ on:
 jobs:
 # https://github.com/golangci/golangci-lint-action#how-to-use
   lint:
+    name: Lint go code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # renovate: tag=v2
-      - name: golangci-lint
+      - name: Checkout git repo
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # renovate: tag=v2
+      - name: Lint go code with golangci-lint
         uses: golangci/golangci-lint-action@5c56cd6c9dc07901af25baab6f2b0d9f3b7c3018 # renovate: tag=v2
         with:
           # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
           version: v1.41.1
   test:
+    name: Verify go test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # renovate: tag=v2
-      - uses: actions/setup-go@331ce1d993939866bb63c32c6cbbfd48fa76fc57 # renovate: tag=v2
+      - name: Checkout git repo
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # renovate: tag=v2
+      - name: Setup golang
+        uses: actions/setup-go@331ce1d993939866bb63c32c6cbbfd48fa76fc57 # renovate: tag=v2
         with:
           go-version: '1.17.0'
-      - run: go version
-      - run: go test -v ./...
+      - name: Print go version
+        run: go version
+      - name: Execute go tests 
+        run: go test -v ./...
   tilt-ci:
+    name: Verify tilt ci
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # renovate: tag=v2
+      - name: Checkout git repo
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # renovate: tag=v2
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.2.0
-      - uses: yokawasa/action-setup-kube-tools@v0.7.1
+      - name: Install tilt cli
+        uses: yokawasa/action-setup-kube-tools@v0.7.1
         with:
           setup-tools: |
             tilt
           tilt: '0.18.11'
-      - name: tilt ci
+      - name: Execute tilt ci
         run: |
           timeout 600 tilt ci
