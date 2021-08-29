@@ -24,7 +24,7 @@ spec:
           tcpSocket:
             port: 80
       - name: network-health-http
-        image: network-health-image
+        image: ghcr.io/damoon/network-health-sidecar:latest
         ports:
         - containerPort: 8080
         readinessProbe:

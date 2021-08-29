@@ -21,7 +21,7 @@ if os.environ.get('PROD', '') ==  '':
   ]
 
 docker_build(
-  ref='network-health-image',
+  ref='ghcr.io/damoon/network-health-sidecar:latest',
   context='.',
   live_update=live_update,
   target=target,

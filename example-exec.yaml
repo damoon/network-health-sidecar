@@ -24,7 +24,7 @@ spec:
           tcpSocket:
             port: 80
       - name: network-health-exec
-        image: network-health-image
+        image: ghcr.io/damoon/network-health-sidecar:latest
         args:
         - --protocol=unix
         - --addr=/tmp/network-health.socket
