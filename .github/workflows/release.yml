@@ -2,7 +2,7 @@ name: Create and publish a Docker image
 
 on:
   push:
-    branches-ignore:
+    branches:
       - 'main'
 
 env:
@@ -31,6 +31,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@3a3bb3a81753dc99f090d24ee7e5343838b73a96 # renovate: tag=v3
         with:
+          flavor: |
+            latest=true
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
