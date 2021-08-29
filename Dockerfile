@@ -15,12 +15,12 @@ RUN go mod download
 
 # client
 COPY ./cmd/network-health-client ./cmd/network-health-client
-RUN CGO_ENABLED=0 GOOS=linux go install -a -installsuffix cgo ./cmd/network-health-client
+RUN go install ./cmd/network-health-client
 
 # server
 COPY ./cmd/network-health-server ./cmd/network-health-server
 COPY ./pkg ./pkg
-RUN CGO_ENABLED=0 GOOS=linux go install -a -installsuffix cgo ./cmd/network-health-server
+RUN go install ./cmd/network-health-server
 
 # production image ############################################
 FROM alpine:3.14.2@sha256:e1c082e3d3c45cccac829840a25941e679c25d438cc8412c2fa221cf1a824e6a AS prod
