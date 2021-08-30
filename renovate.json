@@ -13,6 +13,20 @@
     ],
     "automerge": true,
     "automergeType": "pr",
+    "kubernetes": {
+        "fileMatch": [
+            "\\.yaml$"
+        ]
+    },
+    "packageRules": [
+        {
+            "matchPackageNames": [
+                "ghcr.io/damoon/network-health-sidecar"
+            ],
+            "enabled": false,
+            "pinDigests": false
+        }
+    ],
     "regexManagers": [
         {
             "fileMatch": [
