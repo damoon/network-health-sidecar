@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:1.23.0@sha256:10f14ffa93f8dedf1057897b745e5ac72ac5655c299dade0aa434c71557697ea
+        image: nginx:1.23.0@sha256:ca7f6e513f215285330359606f1c801ad918836b29a3fa9a609682eac2fbcaab
         ports:
         - containerPort: 80
         readinessProbe:
