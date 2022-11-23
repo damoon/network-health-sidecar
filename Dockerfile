@@ -23,7 +23,7 @@ COPY ./pkg ./pkg
 RUN go install ./cmd/network-health-server
 
 # production image ############################################
-FROM alpine:3.16.3@sha256:b95359c2505145f16c6aa384f9cc74eeff78eb36d308ca4fd902eeeb0a0b161b AS prod
+FROM alpine:3.17.0@sha256:8914eb54f968791faf6a8638949e480fef81e697984fba772b3976835194c6d4 AS prod
 RUN apk add --no-cache ca-certificates
 
 COPY --from=build-env /go/bin/network-health-client /bin/network-health-client
